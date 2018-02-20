@@ -8,17 +8,18 @@ var index = require("./routes/index");
 var users = require("./routes/users");
 var bluebird = require("bluebird");
 var mongoose = require("mongoose");
-var api = require('./routes/api.route')
+var api = require('./routes/api.route');
+var credentials = require("./credentials");
 
 var app = express();
 
 mongoose.Promise = bluebird;
-mongoose.connect('mongodb://rdanieldesign:Ruby1989!M@settleupdb-shard-00-00-gj7jb.mongodb.net:27017,settleupdb-shard-00-01-gj7jb.mongodb.net:27017,settleupdb-shard-00-02-gj7jb.mongodb.net:27017/test?ssl=true&replicaSet=SettleUpDB-shard-0&authSource=admin')
+mongoose.connect(`mongodb://${credentials.userName}:${credentials.password}${credentials.connectionString}`)
   .then(() => {
-    console.log(`Succesfully Connected to the Mongodb Database  at URL : mongodb+srv://rdanieldesign:Ruby1989!M@settleupdb-gj7jb.mongodb.net/test`)
+    console.log(`Succesfully Connected to the Mongodb Database`)
   })
   .catch(() => {
-    console.log(`Error Connecting to the Mongodb Database at URL : mongodb+srv://rdanieldesign:Ruby1989!M@settleupdb-gj7jb.mongodb.net/test`)
+    console.log(`Error Connecting to the Mongodb Database`)
   })
 
 app.use(function (req, res, next) {
