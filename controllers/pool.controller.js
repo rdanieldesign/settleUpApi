@@ -7,9 +7,18 @@ exports.getPools = async function (req, res, next) {
 
     try {
         var pools = await PoolService.getPools({}, page, limit)
-        return res.status(200).json({ status: 200, data: pools, message: "Succesfully Pools Recieved" });
+        return res.status(200).json({ status: 200, data: pools, message: "Succesfully RecievednPools"});
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });
+    }
+}
+
+exports.getPool = async function(req, res, next) {
+    try {
+        var pool = await PoolService.getPool(req.params.id);
+        return res.status(200).json({status: 200, data: pool, message: "Successfully Received Pool"});
+    } catch(e) {
+        return res.status(400).json({status: 400, message: e.message});
     }
 }
 
@@ -30,7 +39,6 @@ exports.updatePool = async function (req, res, next) {
         return res.status(400).json({ status: 400., message: "Id must be present" })
     }
     var id = req.body._id;
-    console.log(req.body)
     var pool = {
         id,
         name: req.body.name ? req.body.name : null,

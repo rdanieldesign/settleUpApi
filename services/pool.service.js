@@ -1,6 +1,5 @@
 var Pool = require('../models/pool.model');
 
-// Async function to get the To do List
 exports.getPools = async function (query, page, limit) {
 
     // Options setup for the mongoose paginate
@@ -9,13 +8,20 @@ exports.getPools = async function (query, page, limit) {
         limit,
     };
 
-    console.log(options, query)
-
     try {
-        var pools = await Pool.paginate(query, options)
+        var pools = await Pool.paginate(query, options);
         return pools;
     } catch (e) {
-        throw Error('Error while Paginating Pools')
+        throw Error('Error while Paginating Pools');
+    }
+}
+
+exports.getPool = async function(poolId) {
+    try {
+        var pool = await Pool.findOne({_id: poolId});
+        return pool;
+    } catch(e) {
+        throw Error("Error getting Pool");
     }
 }
 
@@ -27,7 +33,7 @@ exports.createPool = async function (pool) {
         var savedPool = await newPool.save();
         return savedPool;
     } catch (e) {
-        throw Error("Error while Creating Pool")
+        throw Error("Error while Creating Pool");
     }
 }
 
@@ -37,7 +43,7 @@ exports.updatePool = async function (pool) {
     try {
         var oldPool = await Pool.findById(id);
     } catch (e) {
-        throw Error("Error occured while Finding the Pool")
+        throw Error("Error occured while Finding the Pool");
     }
 
     if (!oldPool) {
@@ -48,7 +54,7 @@ exports.updatePool = async function (pool) {
     oldPool.name = pool.name
 
     try {
-        var savedPool = await oldPool.save()
+        var savedPool = await oldPool.save();
         return savedPool;
     } catch (e) {
         throw Error("And Error occured while updating the Pool");
