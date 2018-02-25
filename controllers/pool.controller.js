@@ -2,11 +2,14 @@ var PoolService = require('../services/pool.service');
 
 exports.getPools = async function (req, res, next) {
 
+    // If no user ID exists in the JWT return a 401
+    if (!req.payload._id) return res.status(401).json({ "message": "Unauthorized Error" });
+
     var page = req.query.page ? req.query.page : 1
     var limit = req.query.limit ? req.query.limit : 10;
 
     try {
-        var pools = await PoolService.getPools({}, page, limit)
+        var pools = await PoolService.getPools({}, page, limit);
         return res.status(200).json({ status: 200, data: pools, message: "Succesfully RecievednPools"});
     } catch (e) {
         return res.status(400).json({ status: 400, message: e.message });
@@ -14,6 +17,9 @@ exports.getPools = async function (req, res, next) {
 }
 
 exports.getPool = async function(req, res, next) {
+    // If no user ID exists in the JWT return a 401
+    if (!req.payload._id) return res.status(401).json({ "message": "Unauthorized Error" });
+
     try {
         var pool = await PoolService.getPool(req.params.id);
         return res.status(200).json({status: 200, data: pool, message: "Successfully Received Pool"});
@@ -23,6 +29,9 @@ exports.getPool = async function(req, res, next) {
 }
 
 exports.createPool = async function (req, res, next) {
+    // If no user ID exists in the JWT return a 401
+    if (!req.payload._id) return res.status(401).json({ "message": "Unauthorized Error" });
+
     var pool = {
         name: req.body.name,
     }
@@ -35,6 +44,9 @@ exports.createPool = async function (req, res, next) {
 }
 
 exports.updatePool = async function (req, res, next) {
+    // If no user ID exists in the JWT return a 401
+    if (!req.payload._id) return res.status(401).json({ "message": "Unauthorized Error" });
+
     if (!req.body._id) {
         return res.status(400).json({ status: 400., message: "Id must be present" })
     }
@@ -53,6 +65,9 @@ exports.updatePool = async function (req, res, next) {
 }
 
 exports.removePool = async function (req, res, next) {
+    // If no user ID exists in the JWT return a 401
+    if (!req.payload._id) return res.status(401).json({ "message": "Unauthorized Error" });
+    
     var id = req.params.id;
     try {
         var deleted = await PoolService.deletePool(id)

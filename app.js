@@ -4,12 +4,15 @@ var favicon = require("serve-favicon");
 var logger = require("morgan");
 var cookieParser = require("cookie-parser");
 var bodyParser = require("body-parser");
+var passport = require("passport");
 var index = require("./routes/index");
 var users = require("./routes/users");
 var bluebird = require("bluebird");
 var mongoose = require("mongoose");
 var api = require('./routes/api.route');
 var credentials = require("./credentials");
+require("./models/user.model");
+require("./routes/api/config/passport");
 
 var app = express();
 
@@ -31,7 +34,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -44,6 +46,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.use(passport.initialize());
 app.use("/", index);
 app.use("/users", users);
 app.use('/api', api);
@@ -62,8 +65,14 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
-  res.render("error");
+  if (err.name === 'UnauthorizedError') {
+    res.status(401);
+    res.json({ "message": err.name + ": " + err.message });
+  } else {
+    res.status(err.status || 500);
+    res.render("error");
+  }
 });
+
 
 module.exports = app;
