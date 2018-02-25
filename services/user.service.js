@@ -12,6 +12,6 @@ exports.registerUser = async function (user) {
         var token = newUser.generateJwt();
         return token;
     } catch (e) {
-        throw Error("Error while Regsitering User");
+        throw Error("Error while Registering User");
     }
 };
