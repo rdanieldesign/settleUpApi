@@ -1,4 +1,5 @@
 var UserService = require("../services/user.service");
+var passport = require("passport");
 
 exports.registerUser = async function (req, res, next) {
     var newUser = {
@@ -14,22 +15,26 @@ exports.registerUser = async function (req, res, next) {
     }
 }
 
-exports.login = async function (req, res, next) {
-    try {
+exports.login = function (req, res, next) {
+    passport.authenticate('local', function (err, user, info) {
         var token;
-        var message;
-        await passport.authenticate('local', function (err, user, info) {
-            // If a user is found
-            if (user) {
-                token = user.generateJwt();
-            } else {
-                // If user is not found
-                message = info
-            }
-        })(req, res);
-        if (user) return res.status(200).json({ status: 200, data: { token }, message: "Succesfully Logged In" });
-        return res.status(401).json({ status: 401, message });
-    } catch (e) {
-        return res.status(404).json(e);
-    }
+
+        // If Passport throws/catches an error
+        if (err) {
+            res.status(404).json(err);
+            return;
+        }
+
+        // If a user is found
+        if (user) {
+            token = user.generateJwt();
+            res.status(200);
+            res.json({
+                "token": token
+            });
+        } else {
+            // If user is not found
+            res.status(401).json(info);
+        }
+    })(req, res);
 }
