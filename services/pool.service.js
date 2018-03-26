@@ -26,9 +26,7 @@ exports.getPool = async function(poolId) {
 }
 
 exports.createPool = async function (pool) {
-    var newPool = new Pool({
-        name: pool.name,
-    });
+    var newPool = new Pool(pool);
     try {
         var savedPool = await newPool.save();
         return savedPool;
